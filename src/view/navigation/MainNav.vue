@@ -14,7 +14,7 @@ export default{
           url: "/resume"
         },
         {
-          text: "Skills",
+          text: "Skills/Projects",
           url: "/skills"
         },
         {
@@ -44,7 +44,7 @@ export default{
       <!-- mx-auto == margin-auto, center content in the parent -->
       <div class="flex h-full flex-nowrap border-b border-solid border-peach-pink px-2 md:px-8 mx-auto">
         <!-- :href == v-bind:href, v-bind not technically necessary -->
-        <router-link to="/" class="flex h-full items-center text-l md:text-xl text-peach-pink md:text-white">
+        <router-link to="/" class="flex h-full items-center text-l md:text-xl text-peach-pink md:text-white hover:text-peach-pink transition duration-300">
           Matthew Peach
         </router-link>
 
@@ -56,7 +56,7 @@ export default{
             <!-- first:ml-0 == only apply this to the first element-->
             <li v-for="menuItem in menuItems" v-bind:key="menuItem.text" class="ml-9 h-full first:ml-0">
               <!-- menuItem is replaced -->
-              <router-link v-bind:to="menuItem.url" class="flex h-full items-center py-2.5">
+              <router-link v-bind:to="menuItem.url" class="flex h-full items-center py-2.5 hover:text-peach-pink transition duration-300">
                 {{menuItem.text}}
               </router-link>
             </li>
@@ -64,27 +64,30 @@ export default{
             <!-- Projects Dropdown Menu -->
             <li class="flex ml-9 h-full items-center py-2.5">
               <div class="relative group">
-                <router-link to="/projects">
-                  Projects
+                <router-link to="/skills">
+                  Interactive
                 </router-link>
-                <div class="grid grid-rows-5 gap-2 absolute rounded-b-lg p-2 bg-peach-black invisible group-hover:visible w-[250px]">
+                <div class="grid grid-rows-4 gap-2 absolute rounded-b-lg p-2 bg-peach-black invisible group-hover:visible w-[250px]">
                   <router-link to="/projects/aerial" class="hover:bg-peach-peach hover:text-black transition duration-300">
                     Aerial Image Classifier
                   </router-link>
                   <router-link to="/projects/cryptography" class="hover:bg-peach-peach hover:text-black transition duration-300">
-                    Cryptography
+                    Caesar Cipher
                   </router-link>
                   <router-link to="/projects/game" class="hover:bg-peach-peach hover:text-black transition duration-300">
                     Projects Island
                   </router-link>
+                  <router-link to="/projects/oceanobsidian" class="hover:bg-peach-peach hover:text-black transition duration-300">
+                    Ocean Obsidian
+                  </router-link>
 <!--                  <router-link to="/projects/dungeon" class="hover:bg-peach-peach hover:text-black transition duration-300">-->
 <!--                    Dungeon Game-->
 <!--                  </router-link>-->
-                  <router-link to="/projects/qualmanagement" class="hover:bg-peach-peach hover:text-black transition duration-300">
-                    Qual Management Demo
-                  </router-link>
+<!--                  <router-link to="/projects/qualmanagement" class="hover:bg-peach-peach hover:text-black transition duration-300">-->
+<!--                    Qual Management Demo-->
+<!--                  </router-link>-->
                   <router-link to="/projects/algorithms" class="hover:bg-peach-peach hover:text-black transition duration-300">
-                    Algorithm Animations
+                    BFS/DFS Animation
                   </router-link>
                 </div>
               </div>
@@ -108,7 +111,7 @@ export default{
             </li>
             <li>
               <button @click="toggleProjectsMobileDropdownVisibility()" class="ml-3 h-full">
-                Projects
+                Interactive
               </button>
             </li>
           </ul>
@@ -124,7 +127,13 @@ export default{
               <hr class="border-t mx-2 pt-2 pb-2 border-peach-pink">
               <li>
                 <router-link @click.native="closeDropdown" to="/projects/cryptography">
-                  Cryptography
+                  Caesar Cipher
+                </router-link>
+              </li>
+              <hr class="border-t mx-2 pt-2 pb-2 border-peach-pink">
+              <li>
+                <router-link @click.native="closeDropdown" to="/projects/oceanobsidian">
+                  Ocean Obsidian
                 </router-link>
               </li>
 <!--              <hr class="border-t mx-2 pt-2 pb-2 border-peach-pink">-->

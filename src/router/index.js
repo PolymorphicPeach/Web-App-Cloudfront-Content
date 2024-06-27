@@ -10,6 +10,7 @@ import GameView from "@/view/projects/domain/island/GameView.vue";
 import DungeonGameView from "@/view/projects/domain/dungeon/DungeonGameView.vue";
 import QualManagementView from "@/view/projects/domain/qual_management_demo/QualManagementView.vue";
 import AlgorithmsView from "@/view/projects/domain/algorithms/AlgorithmsView.vue";
+import OceanObsidianView from "@/view/projects/domain/ocean_obsidian/OceanObsidianView.vue";
 
 const routes = [
     {
@@ -56,6 +57,11 @@ const routes = [
         path: "/projects/dungeon",
         name: "DungeonGame",
         component: DungeonGameView
+    },
+    {
+        path: "/projects/oceanobsidian",
+        name: "OceanObsidian",
+        component: OceanObsidianView
     },
     {
         path: "/projects/qualmanagement",

@@ -73,14 +73,17 @@ export default{
       await this.renderChart();
     },
     async sendTextToBackend(){
+      // clear
+      this.responseData = null;
+      const backendUrl = "https://d24kvwnwbws997.cloudfront.net/api/caesar-cipher";
       const payload = {
         plaintext: this.textInput,
         key: this.key,
       };
       try{
-        const response = await axios.post(import.meta.env.VITE_API_CAESAR, payload);
+        const response = await axios.post(backendUrl, payload);
         console.log(response);
-        this.responseData = response.data;
+        this.responseData = JSON.parse(response.data.body);
       }
       catch(error){
         console.error("Error sending data to backend: ", error);
@@ -92,8 +95,7 @@ export default{
       }
       const chartCanvas = document.getElementById("chartCanvas");
       const ctx = chartCanvas.getContext("2d");
-
-      const data = this.responseData.letterFrequency;
+      const {letterFrequency} = this.responseData;
 
       this.chart = new Chart(ctx, {
         type: "bar",
@@ -101,7 +103,7 @@ export default{
           datasets: [
             {
               label: "letter frequency",
-              data: data,
+              data: letterFrequency,
               backgroundColor: this.heatmap
             }
           ]
@@ -212,8 +214,6 @@ export default{
       </div>
     </form>
   </div>
-
-
 
   <!------------ Response div --------------->
   <div v-if="responseData" class="container mx-auto p-3">

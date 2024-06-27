@@ -6,7 +6,7 @@ export default{
   name: "AerialClassificationView",
   data(){
     return{
-      staticMapSrc: "",
+      imageSrc: "",
       latitude: 36.85,
       longitude: -75.97,
       zoom: 15,
@@ -16,57 +16,39 @@ export default{
     }
   },
   mounted(){
-    this.getMap();
-
+    this.sendData();
   },
   methods: {
-    async getMap(){
-      if(this.validateCoordinates()) {
-        try {
-          const backendURL = import.meta.env.VITE_API_STATIC_MAP;
+    async sendData(){
+      const backendUrl = "https://d24kvwnwbws997.cloudfront.net/api/machine-learning/aerial-classification";
+      if(this.validateCoordinates()){
+        // Clear variables
+        this.imageSrc = null;
+        this.chartData = null;
 
-          const response = await axios.post(backendURL,
+        try{
+          const response = await axios.post(backendUrl,
               {
                 latitude: this.latitude,
-                longitude: this.longitude,
-                zoom: this.zoom
+                longitude: this.longitude
               },
               {
-                responseType: 'arraybuffer'
-              }
-          );
-          const imageBytes = response.data;
-          this.staticMapSrc = `data:image/png;base64,${btoa(String.fromCharCode.apply(null, new Uint8Array(imageBytes)))}`;
-        }
-        catch (error) {
-          console.error("Error sending data to backend: ", error);
-        }
-      }
-      else{
-        this.errorMessage = "Invalid coordinate values."
-      }
-    },
-    async submitForPrediction(){
-      await this.sendMapToBackend();
-      await this.renderChart();
-    },
-    async sendMapToBackend(){
-      try{
-        const backendURL = import.meta.env.VITE_API_AERIAL;
+                timeout: 10000
+              });
+          let parsedBody = JSON.parse(response.data.body);
 
-        const response = await axios.post(backendURL,
-            {
-              latitude: this.latitude,
-              longitude: this.longitude,
-              zoom: this.zoom
-            });
-        this.chartData = response.data;
-      }
-      catch(error){
-        console.error("Error sending image to backend: ", error);
+          // extract properties
+          const {image, predictions} = parsedBody;
+          this.chartData = predictions;
+          this.imageSrc = `data:image/jpeg;base64,${image}`;
+          this.renderChart();
+        }
+        catch(error){
+          console.error("Error sending data: ", error);
+        }
       }
     },
-    async renderChart(){
+    renderChart(){
       const chartCanvas = document.getElementById("chartCanvas");
 
       // Destroy pre-existing chart
@@ -106,54 +88,13 @@ export default{
 </script>
 
 <template>
-<!--  <div class="md:container mx-auto mt-1">-->
-<!--    &lt;!&ndash; Row 1: Form and Map &ndash;&gt;-->
-<!--    <div class="flex flex-col md:flex-row gap-1">-->
-<!--      &lt;!&ndash; Column 1: Longitude/Latitude form &ndash;&gt;-->
-<!--      <div class="md:w-1/2">-->
-<!--        <div class="max-w-md mx-auto p-6 bg-peach-black rounded-md shadow-md">-->
-<!--          <form ref="locationForm" @submit.prevent="getMap">-->
-<!--            <div class="mb-4">-->
-<!--              <label for="latitude" class="block text-peach-peach text-sm font-bold mb-2">latitude:</label>-->
-<!--              <input v-model="latitude" type="number" id="latitude" name="latitude" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500 appearance-none" step="any" required>-->
-<!--              <p class="text-peach-peach text-xs mt-1">Valid range: -90 to 90</p>-->
-<!--            </div>-->
-<!--            <div class="mb-4">-->
-<!--              <label for="longitude" class="block text-peach-peach text-sm font-bold mb-2">longitude:</label>-->
-<!--              <input v-model="longitude" type="number" id="longitude" name="longitude" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500 appearance-none" step="any" required>-->
-<!--              <p class="text-peach-peach text-xs mt-1">Valid range: -180 to 180</p>-->
-<!--            </div>-->
-<!--            <div v-if="errorMessage" class="text-red-500 mb-4">{{ errorMessage }}</div>-->
-<!--            <button type="submit" class="w-full bg-peach-pink text-peach-black p-3 rounded-md hover:bg-peach-peach transition duration-300">Show Location</button>-->
-<!--          </form>-->
-<!--          <form @submit.prevent="submitForPrediction" class="mt-2">-->
-<!--            <button type="submit" class="w-full bg-peach-pink text-peach-black p-3 rounded-md hover:bg-peach-peach transition duration-300">Get Prediction</button>-->
-<!--          </form>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      &lt;!&ndash; Column 2: Static map display &ndash;&gt;-->
-<!--      <div class="w-full bg-red-500 md:w-1/2  h-min-[300px]">-->
-<!--        <div class="flex items-center justify-center h-full">-->
-<!--          <img class="w-full h-full" :src="staticMapSrc"/>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--    &lt;!&ndash; Row 2: Chart &ndash;&gt;-->
-<!--    <div class="flex flex-col md:flex-row gap-1">-->
-<!--      <div class="w-full max-h-[500px] mx-auto">-->
-<!--        <canvas id="chartCanvas"></canvas>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-
-
   <div class="flex flex-wrap mt-1 mx-auto md:container">
     <!-- Row 1: Form and Map -->
     <div class="flex flex-col md:flex-row gap-1 w-full">
       <!-- Column 1: Longitude/Latitude form -->
       <div class="flex-1">
         <div class="max-w-md mx-auto p-6 bg-peach-black rounded-md shadow-md">
-          <form ref="locationForm" @submit.prevent="getMap">
+          <form ref="locationForm" @submit.prevent="sendData">
             <div class="mb-4">
               <label for="latitude" class="block text-peach-peach text-sm font-bold mb-2">Latitude:</label>
               <input v-model="latitude" type="number" id="latitude" name="latitude" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500 appearance-none" step="any" required>
@@ -165,17 +106,14 @@ export default{
               <p class="text-peach-peach text-xs mt-1">Valid range: -180 to 180</p>
             </div>
             <div v-if="errorMessage" class="text-red-500 mb-4">{{ errorMessage }}</div>
-            <button type="submit" class="w-full bg-peach-pink text-peach-black p-3 rounded-md hover:bg-peach-peach transition duration-300">Show Location</button>
-          </form>
-          <form @submit.prevent="submitForPrediction" class="mt-2">
-            <button type="submit" class="w-full bg-peach-pink text-peach-black p-3 rounded-md hover:bg-peach-peach transition duration-300">Get Prediction</button>
+            <button type="submit" class="w-full bg-peach-pink text-peach-black p-3 rounded-md hover:bg-peach-peach transition duration-300">Submit</button>
           </form>
         </div>
       </div>
       <!-- Column 2: Static map display -->
       <div class="flex-1 min-h-[300px]">
         <div class="flex items-center justify-center h-full">
-          <img :src="staticMapSrc" class="max-w-full max-h-full object-cover">
+          <img :src="imageSrc" class="max-w-full max-h-full object-cover">
         </div>
       </div>
     </div>
@@ -186,9 +124,6 @@ export default{
       </div>
     </div>
   </div>
-
-
-
 </template>
 
 <style scoped>
