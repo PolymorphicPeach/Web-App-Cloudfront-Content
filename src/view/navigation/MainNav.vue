@@ -89,6 +89,9 @@ export default{
                   <router-link to="/projects/algorithms" class="hover:bg-peach-peach hover:text-black transition duration-300">
                     BFS/DFS Animation
                   </router-link>
+                  <router-link to="/projects/breakmaster" class="hover:bg-peach-peach hover:text-black transition duration-300">
+                    BreakMaster
+                  </router-link>
                 </div>
               </div>
             </li>

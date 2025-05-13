@@ -16,7 +16,10 @@ export default {
 
 <template>
   <div>
-    <button @click="downloadROM">Download pokemon-ocean-obsidian.gba</button>
+    <button @click="downloadROM">Click here to download pokemon-ocean-obsidian.gba</button>
+  </div>
+  <div>
+    <a href="https://github.com/PolymorphicPeach/pokemon-ocean-obsidian/tree/ocean-obsidian-dev/src" target="_blank">Github link</a>
   </div>
 </template>
 

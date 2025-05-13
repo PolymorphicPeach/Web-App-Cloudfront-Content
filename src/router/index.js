@@ -11,6 +11,7 @@ import DungeonGameView from "@/view/projects/domain/dungeon/DungeonGameView.vue"
 import QualManagementView from "@/view/projects/domain/qual_management_demo/QualManagementView.vue";
 import AlgorithmsView from "@/view/projects/domain/algorithms/AlgorithmsView.vue";
 import OceanObsidianView from "@/view/projects/domain/ocean_obsidian/OceanObsidianView.vue";
+import BreakMasterView from "@/view/projects/domain/breakmaster/BreakMasterView.vue";
 
 const routes = [
     {
@@ -72,6 +73,11 @@ const routes = [
         path: "/projects/algorithms",
         name: "Algorithms Animations",
         component: AlgorithmsView
+    },
+    {
+        path: "/projects/breakmaster",
+        name: "BreakMaster",
+        component: BreakMasterView
     }
 ];
 
